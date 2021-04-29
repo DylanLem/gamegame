@@ -1,4 +1,5 @@
 import main
+import pygame
 import numpy
 import math
 
@@ -13,6 +14,9 @@ entities = [
 ]
 
 
+# *** ENTITY FUNCTIONS ***
+# (class definitions are after these)
+
 # this functions tracks down and resolves collisions between all circles currently
 # in the game.
 # eventually this will be generalized to all entities, not just circles, so that we're
@@ -24,8 +28,8 @@ entities = [
 # between a circle and a rectangle.
 def resolve_circles_collision():
     circles = get_circles()
-    for i in range(len(circles)):               # for every circle i in circles
-        for j in range(i + 1, len(circles)):    # for every remaining circle j in circle
+    for i in range(len(circles)):               # for every circle, i, in circles
+        for j in range(i + 1, len(circles)):    # for every remaining circle, j, starting from i, in circles
             # get the i-th and j-th circles
             c1 = circles[i]
             c2 = circles[j]
@@ -81,7 +85,7 @@ class Circle:
         self.radius = r
         # speed that this circle is travelling
         self.spd = 0.0
-        # direction in radians that this circle is travelling (0 = east)
+        # direction in degrees that this circle is travelling (0 = east)
         self.dir = 0.0
         # the horizontal and vertical speeds of this circle
         self.hspd = 0.0
@@ -90,6 +94,11 @@ class Circle:
         self.velocity = numpy.array([self.hspd, self.vspd])
         # the position of this circle
         self.pos = numpy.array([self.x, self.y])
+
+    # move the circle by its hspd and vspd
+    def move(self):
+        self.x += self.velocity[0]
+        self.y += self.velocity[1]
 
 
 # *** ACTUAL OBJECTS LIKE CARS AND STUFF ***
@@ -104,3 +113,30 @@ class Car(Circle):
         self.velocity += numpy.array([self.acceleration * math.cos(direction) / main.FPS,
                                       self.acceleration * -math.sin(direction) / main.FPS])
         self.orientation = ((direction - math.pi / 2) / (2 * math.pi)) * 360
+
+    # turn the car left or right (counter-clockwise or clockwise)
+    #   direction - the direction in degrees to turn the car (negative values turn right)
+    def turn(self, direction):
+        # add the given direction to the car's direction
+        self.dir += direction
+        # wrap dir back to 0 if greater than 360, or back to 360 if less than 0.
+        self.dir = self.dir % 360
+        self.update_sprite_angle()
+
+    def update_sprite_angle(self):
+        if self.dir > 337.5 or self.dir <= 22.5:
+            self.sprite = main.SPR_CAR_EAST
+        elif 22.5 < self.dir <= 67.5:
+            self.sprite = main.SPR_CAR_NORTHEAST
+        elif 67.5 < self.dir <= 112.5:
+            self.sprite = main.SPR_CAR_NORTH
+        elif 112.5 < self.dir <= 157.5:
+            self.sprite = main.SPR_CAR_NORTHWEST
+        elif 157.5 < self.dir <= 202.5:
+            self.sprite = main.SPR_CAR_WEST
+        elif 202.5 < self.dir <= 247.5:
+            self.sprite = main.SPR_CAR_SOUTHWEST
+        elif 247.5 < self.dir <= 295.5:
+            self.sprite = main.SPR_CAR_SOUTH
+        elif 295.5 < self.dir <= 337.5:
+            self.sprite = main.SPR_CAR_SOUTHEAST
