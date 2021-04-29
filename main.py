@@ -4,12 +4,14 @@ import random
 import pygame
 import numpy
 import Car
-import Circle
+
 
 # load an image of the car
+import Circle
+
 SPR_SOME_CAR = pygame.image.load(os.path.join("sprites", "car.png"))
 # stretch out the sprite
-SPR_SOME_CAR = pygame.transform.scale(SPR_SOME_CAR, (32, 64))
+SPR_SOME_CAR = pygame.transform.scale(SPR_SOME_CAR, (32,64))
 
 # width and height of the game window
 WIDTH, HEIGHT = 640, 640
@@ -33,9 +35,9 @@ def draw_everything(instances):
 
     # draw each instance in instances
     for instance in instances:
-        sp = pygame.transform.rotate(instance.sprite, instance.orientation)
-        WINDOW.blit(sp, (instance.x - instance.sprite.get_width() / 2,
-                         instance.y - instance.sprite.get_height() / 2))
+        sp = pygame.transform.rotate(instance.sprite,instance.orientation)
+        WINDOW.blit(sp, (instance.x - instance.sprite.get_width()/2,
+                                      instance.y - instance.sprite.get_height()/2))
 
     # update the display
     pygame.display.update()
@@ -46,7 +48,7 @@ def main():
     instances = []
 
     # create an instance for a smiley dude and add it to instances
-    some_car = Car.Car(WIDTH / 2, HEIGHT / 2, SPR_SOME_CAR)
+    some_car = Car.Car(WIDTH/2, HEIGHT/2, SPR_SOME_CAR)
     some_car.r = 32
     instances.append(some_car)
 
@@ -67,14 +69,14 @@ def main():
         # get an array of the currently pressed keys
         keys_pressed = pygame.key.get_pressed()
 
-        if keys_pressed[pygame.K_LEFT]:
+        if(keys_pressed[pygame.K_LEFT]):
             some_car.accelerate(math.pi, FPS)
-        if keys_pressed[pygame.K_RIGHT]:
+        if(keys_pressed[pygame.K_RIGHT]):
             some_car.accelerate(0, FPS)
-        if keys_pressed[pygame.K_UP]:
-            some_car.accelerate(math.pi / 2, FPS)
-        if keys_pressed[pygame.K_DOWN]:
-            some_car.accelerate(-math.pi / 2, FPS)
+        if(keys_pressed[pygame.K_UP]):
+            some_car.accelerate(math.pi/2, FPS)
+        if(keys_pressed[pygame.K_DOWN]):
+            some_car.accelerate(-math.pi/2, FPS)
 
         # get the position of the mouse
         mouse_position = pygame.mouse.get_pos()

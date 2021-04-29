@@ -54,3 +54,4 @@ class Circle:
         self.vspd = 0.0
         # the velocity vector of this circle
         self.velocity = numpy.array([self.hspd, self.vspd])
+        self.pos =  numpy.array([self.x,self.y])
