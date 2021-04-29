@@ -1,4 +1,3 @@
-from Circle import *
 import math
 import os.path
 import random
@@ -7,8 +6,9 @@ import numpy
 import Car
 
 
+# load an image of the car
+import Circle
 
-# load an image of the smiley dude
 SPR_SOME_CAR = pygame.image.load(os.path.join("sprites", "car.png"))
 # stretch out the sprite
 SPR_SOME_CAR = pygame.transform.scale(SPR_SOME_CAR, (32,64))
@@ -69,22 +69,25 @@ def main():
         # get an array of the currently pressed keys
         keys_pressed = pygame.key.get_pressed()
 
-        if(pygame.key.get_pressed()[pygame.K_LEFT]):
+        if(keys_pressed[pygame.K_LEFT]):
             some_car.accelerate(math.pi, FPS)
-        if(pygame.key.get_pressed()[pygame.K_RIGHT]):
+        if(keys_pressed[pygame.K_RIGHT]):
             some_car.accelerate(0, FPS)
-        if(pygame.key.get_pressed()[pygame.K_UP]):
+        if(keys_pressed[pygame.K_UP]):
             some_car.accelerate(math.pi/2, FPS)
-        if(pygame.key.get_pressed()[pygame.K_DOWN]):
+        if(keys_pressed[pygame.K_DOWN]):
             some_car.accelerate(-math.pi/2, FPS)
 
         # get the position of the mouse
-        mousepos = pygame.mouse.get_pos()
+        mouse_position = pygame.mouse.get_pos()
 
-        # snap the dude's position to the mouse
-
+        # move da car by its velocity vector
         some_car.x += some_car.velocity[0]
         some_car.y += some_car.velocity[1]
+
+        # resolve collision of all circles
+        Circle.resolve_collision()
+
         # draw the contents of the window
         draw_everything(instances)
 
