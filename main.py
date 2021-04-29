@@ -35,7 +35,7 @@ def draw_everything(instances):
 
     # draw each instance in instances
     for instance in instances:
-        
+
         sp = pygame.transform.rotate(instance.sprite,instance.orientation)
         WINDOW.blit(sp, (instance.x - instance.sprite.get_width()/2,
                                       instance.y - instance.sprite.get_height()/2))
@@ -71,7 +71,6 @@ def main():
         keys_pressed = pygame.key.get_pressed()
 
         if(pygame.key.get_pressed()[pygame.K_LEFT]):
-            print("hey")
             some_car.accelerate(math.pi, FPS)
         if(pygame.key.get_pressed()[pygame.K_RIGHT]):
             some_car.accelerate(0, FPS)
