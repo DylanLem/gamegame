@@ -4,6 +4,9 @@ import os.path
 import random
 import pygame
 import numpy
+import Car
+
+
 
 # load an image of the smiley dude
 SPR_SOME_CAR = pygame.image.load(os.path.join("sprites", "car.png"))
