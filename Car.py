@@ -12,5 +12,5 @@ class Car(Circle.Circle):
     def accelerate(self,direction, fps):
         self.velocity += numpy.array([self.acceleration * math.cos(direction) /fps, self.acceleration * -math.sin(direction) / fps])
 
-
+        s
         self.orientation = ((direction - math.pi/2)/(2*math.pi)) * 360

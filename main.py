@@ -35,7 +35,6 @@ def draw_everything(instances):
 
     # draw each instance in instances
     for instance in instances:
-
         sp = pygame.transform.rotate(instance.sprite,instance.orientation)
         WINDOW.blit(sp, (instance.x - instance.sprite.get_width()/2,
                                       instance.y - instance.sprite.get_height()/2))
