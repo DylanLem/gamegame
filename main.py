@@ -82,8 +82,9 @@ def main():
         mousepos = pygame.mouse.get_pos()
 
         # snap the dude's position to the mouse
-        
 
+        some_car.x += some_car.velocity[0]
+        some_car.y += some_car.velocity[1]
         # draw the contents of the window
         draw_everything(instances)
 

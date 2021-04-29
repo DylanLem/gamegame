@@ -10,4 +10,4 @@ class Car(Circle.Circle):
         super(Car, self).__init__(x,y,sprite)
 
     def accelerate(self,direction, fps):
-        self.velocity += numpy.array([self.acceleration * math.cos(direction), self.acceleration * -math.sin(direction)])
+        self.velocity += numpy.array([self.acceleration * math.cos(direction) /fps, self.acceleration * -math.sin(direction) / fps])
