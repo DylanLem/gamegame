@@ -47,7 +47,7 @@ def main():
     instances = []
 
     # create an instance for a smiley dude and add it to instances
-    some_car = Circle(WIDTH/2, HEIGHT/2, SPR_SOME_CAR)
+    some_car = Car.Car(WIDTH/2, HEIGHT/2, SPR_SOME_CAR)
     some_car.r = 32
     instances.append(some_car)
 
@@ -68,12 +68,21 @@ def main():
         # get an array of the currently pressed keys
         keys_pressed = pygame.key.get_pressed()
 
+        if(pygame.key.get_pressed()[pygame.K_LEFT]):
+            print("hey")
+            some_car.accelerate(math.pi, FPS)
+        if(pygame.key.get_pressed()[pygame.K_RIGHT]):
+            some_car.accelerate(0, FPS)
+        if(pygame.key.get_pressed()[pygame.K_UP]):
+            some_car.accelerate(-math.pi/2, FPS)
+        if(pygame.key.get_pressed()[pygame.K_DOWN]):
+            some_car.accelerate(math.pi/2, FPS)
+
         # get the position of the mouse
         mousepos = pygame.mouse.get_pos()
 
         # snap the dude's position to the mouse
-        some_car.x = mousepos[0]
-        some_car.y = mousepos[1]
+        
 
         # draw the contents of the window
         draw_everything(instances)

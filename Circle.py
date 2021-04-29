@@ -48,7 +48,7 @@ class Circle:
         # direction in radians that this circle is travelling (0 = east)
         self.dir = 0
         # the horizontal and vertical speeds of this circle
-        self.hspd = 0
-        self.vspd = 0
+        self.hspd = 0.0
+        self.vspd = 0.0
         # the velocity vector of this circle
         self.velocity = numpy.array([self.hspd, self.vspd])

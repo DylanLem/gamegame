@@ -1,9 +1,13 @@
-import circle
+import Circle
 import numpy
+import math
 
-class Car(Circle):
-    friction = 4
-    acceleration = 15
+class Car(Circle.Circle):
 
-    def accelerate(direction, fps):
-        velocity += (numpy.array([acceleration * math.cos(direction), acceleration * -math.sin(direction)]) * fps
+    acceleration = 60.0
+
+    def __init__(self,x,y,sprite):
+        super(Car, self).__init__(x,y,sprite)
+
+    def accelerate(self,direction, fps):
+        self.velocity += numpy.array([self.acceleration * math.cos(direction), self.acceleration * -math.sin(direction)])
