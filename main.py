@@ -35,7 +35,8 @@ def draw_everything(instances):
 
     # draw each instance in instances
     for instance in instances:
-        WINDOW.blit(instance.sprite, (instance.x - instance.sprite.get_width()/2,
+        sp = pygame.transform.rotate(instance.sprite,instance.orientation)
+        WINDOW.blit(sp, (instance.x - instance.sprite.get_width()/2,
                                       instance.y - instance.sprite.get_height()/2))
 
     # update the display
@@ -74,9 +75,9 @@ def main():
         if(pygame.key.get_pressed()[pygame.K_RIGHT]):
             some_car.accelerate(0, FPS)
         if(pygame.key.get_pressed()[pygame.K_UP]):
-            some_car.accelerate(-math.pi/2, FPS)
-        if(pygame.key.get_pressed()[pygame.K_DOWN]):
             some_car.accelerate(math.pi/2, FPS)
+        if(pygame.key.get_pressed()[pygame.K_DOWN]):
+            some_car.accelerate(-math.pi/2, FPS)
 
         # get the position of the mouse
         mousepos = pygame.mouse.get_pos()
