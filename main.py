@@ -3,6 +3,7 @@ import os.path
 import random
 import pygame
 import numpy
+import Car
 
 # load an image of the smiley dude
 SPR_SMILEGUY = pygame.image.load(os.path.join("sprites", "smileguy.png"))
@@ -70,6 +71,9 @@ def main():
 
     # create an instance for a smiley dude and add it to instances
     smileguy = Circle(WIDTH/2, HEIGHT/2, SPR_SMILEGUY)
+
+
+
     smileguy.r = 32
     instances.append(smileguy)
 
@@ -112,8 +116,8 @@ def main():
         mousepos = pygame.mouse.get_pos()
 
         # snap the dude's position to the mouse
-        smileguy.x = mousepos[0]
-        smileguy.y = mousepos[1]
+        #smileguy.x = mousepos[0]
+        #smileguy.y = mousepos[1]
 
         # circle collision:
         for i in range(len(instances)):
