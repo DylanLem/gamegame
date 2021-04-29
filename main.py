@@ -5,6 +5,8 @@ import pygame
 import numpy
 import Car
 
+
+
 # load an image of the smiley dude
 SPR_SMILEGUY = pygame.image.load(os.path.join("sprites", "smileguy.png"))
 # stretch out the sprite
@@ -71,7 +73,7 @@ def main():
 
     # create an instance for a smiley dude and add it to instances
     smileguy = Circle(WIDTH/2, HEIGHT/2, SPR_SMILEGUY)
-
+    carguy = Car(WIDTH/2, HEIGHT/2, SPR_SMILEGUY)
 
 
     smileguy.r = 32
@@ -104,13 +106,13 @@ def main():
 
         # move the smile dude depending on what key is pressed
         if keys_pressed[pygame.K_RIGHT]:
-            smileguy.x += SMILEGUY_SPEED
+            carguy.accelerate(0)
         if keys_pressed[pygame.K_UP]:
-            smileguy.y -= SMILEGUY_SPEED
+            carguy.accelerate(-math.PI/2)
         if keys_pressed[pygame.K_LEFT]:
-            smileguy.x -= SMILEGUY_SPEED
+            carguy.accelerate(math.PI)
         if keys_pressed[pygame.K_DOWN]:
-            smileguy.y += SMILEGUY_SPEED
+            carguy.accelerate(math.PI/2)
 
         # get the position of the mouse
         mousepos = pygame.mouse.get_pos()
