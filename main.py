@@ -4,11 +4,9 @@ import random
 import pygame
 import numpy
 import Car
-
-
-# load an image of the car
 import Circle
 
+# load an image of the car
 SPR_SOME_CAR = pygame.image.load(os.path.join("sprites", "car.png"))
 # stretch out the sprite
 SPR_SOME_CAR = pygame.transform.scale(SPR_SOME_CAR, (32,64))
@@ -69,13 +67,13 @@ def main():
         # get an array of the currently pressed keys
         keys_pressed = pygame.key.get_pressed()
 
-        if(keys_pressed[pygame.K_LEFT]):
+        if keys_pressed[pygame.K_LEFT]:
             some_car.accelerate(math.pi, FPS)
-        if(keys_pressed[pygame.K_RIGHT]):
+        if keys_pressed[pygame.K_RIGHT]:
             some_car.accelerate(0, FPS)
-        if(keys_pressed[pygame.K_UP]):
+        if keys_pressed[pygame.K_UP]:
             some_car.accelerate(math.pi/2, FPS)
-        if(keys_pressed[pygame.K_DOWN]):
+        if keys_pressed[pygame.K_DOWN]:
             some_car.accelerate(-math.pi/2, FPS)
 
         # get the position of the mouse
