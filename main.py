@@ -65,9 +65,9 @@ def main():
 
         # turn the car with the arrow keys
         if keys_pressed[pygame.K_LEFT]:
-            test_car.turn(5)
+            test_car.turn(3)
         if keys_pressed[pygame.K_RIGHT]:
-            test_car.turn(-5)
+            test_car.turn(-3)
 
         # accelerate the car with spacebar
         if keys_pressed[pygame.K_SPACE]:

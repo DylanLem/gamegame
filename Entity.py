@@ -24,11 +24,12 @@ entities = [
 # between a circle and a rectangle.
 def resolve_circles_collision():
     circles = get_circles()
-    for i in range(len(circles)):               # for every circle, i, in circles
-        for j in range(i + 1, len(circles)):    # for every remaining circle, j, starting from i, in circles
-            # get the i-th and j-th circles
-            c1 = circles[i]
-            c2 = circles[j]
+    # for every circle, i, in circles
+    for i in range(len(circles)):
+        c1 = circles[i] # get the i-th circle
+        # for every remaining circle, j, starting from i, in circles
+        for j in range(i + 1, len(circles)):
+            c2 = circles[j] # get the j-th circle
 
             # calculate the x and y distances between c1 and c2
             dx = c2.x - c1.x
@@ -51,6 +52,16 @@ def resolve_circles_collision():
                 c1.y += overlap_y * -numpy.sign(dy)
                 c2.x += overlap_x * numpy.sign(dx)
                 c2.y += overlap_y * numpy.sign(dy)
+
+        # also check screen edge collision for every i
+        if c1.x < 0:
+            c1.x = 0
+        if c1.y < 0:
+            c1.y = 0
+        if c1.x > WIDTH:
+            c1.x = WIDTH
+        if c1.y > HEIGHT:
+            c1.y = HEIGHT
 
 
 # get the list of all the circles in the game
