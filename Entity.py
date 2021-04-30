@@ -8,7 +8,8 @@ import math
 # entities[1] could be the list of all rectangles, and so on.
 # there may be a cleaner way to do this but whatevs for now >:}
 entities = [
-    []     # index 0 is for the list of circles
+    [],     # index 0 is for the list of circles
+    []     # index 1 is for the tiles
            # more lists to come, but so far we just have circles
 ]
 
@@ -66,7 +67,7 @@ def resolve_circles_collision():
 
 # get the list of all the circles in the game
 def get_circles():
-    return entities[0]
+    return entities[1]
 
 
 # create a car object
@@ -129,6 +130,15 @@ class Circle(Entity):
         self.velocity = numpy.array([self.hspd, self.vspd])
         # the position of this circle
         self.pos = numpy.array([self.x, self.y])
+
+
+
+# These babies will build the race track and any environment sprites
+# Walls will have passable = false
+class Tile(Entity):
+    passable = True
+    def __init__(self,sprite,x,y):
+        super().__init__(sprite,x,y)
 
 
 #                      ______

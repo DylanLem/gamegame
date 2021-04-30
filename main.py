@@ -1,10 +1,11 @@
 from Constants import *
 import Entity
+import Level
 
 
 # create an instance for a test car
 test_car = Entity.create_car(SPR_CAR_EAST, WIDTH/2, HEIGHT/2, 0.1, 0.05)
-
+lvl0 = Level.Level(LEVEL0)
 
 # draw everything that is to be displayed on the screen
 def draw_everything(instances):
@@ -65,6 +66,8 @@ def main():
 
         # turn the car with the arrow keys
         if keys_pressed[pygame.K_LEFT]:
+            for entity in Entity.entities[1]:
+                print(entity.y)
             test_car.turn(3)
         if keys_pressed[pygame.K_RIGHT]:
             test_car.turn(-3)
