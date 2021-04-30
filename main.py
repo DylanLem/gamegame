@@ -2,8 +2,12 @@ from Constants import *
 import Entity
 
 
+# create an instance for a test car
+test_car = Entity.create_car(SPR_CAR_EAST, WIDTH/2, HEIGHT/2, 0.1, 0.05)
+
+
 # draw everything that is to be displayed on the screen
-def draw_everything(instances, somecar):
+def draw_everything(instances):
     # draw a white background
     WINDOW.fill(WHITE)
 
@@ -13,29 +17,25 @@ def draw_everything(instances, somecar):
             WINDOW.blit(obj.sprite, (obj.x - obj.sprite.get_width() / 2,
                                      obj.y - obj.sprite.get_height() / 2))
 
-    if somecar is not None:
-        # create some info text to display
-        text = [
-            FONT_MEDIUM.render("accl: " + str(somecar.acceleration), False, BLACK),
-            FONT_MEDIUM.render("dir: " + str(somecar.dir), False, BLACK),
-            FONT_MEDIUM.render("spd: " + str(somecar.spd), False, BLACK)
-        ]
+    # create some info text to display
+    text = [
+        FONT_MEDIUM.render("accl: " + str(test_car.acceleration), False, BLACK),
+        FONT_MEDIUM.render("dir: " + str(test_car.dir), False, BLACK),
+        FONT_MEDIUM.render("spd: " + str(test_car.spd), False, BLACK)
+    ]
 
-        # draw all the info
-        i = 0
-        for t in text:
-            WINDOW.blit(t, (10, 10 + 20 * i))
-            i += 1
+    # draw all the info
+    i = 0
+    for t in text:
+        WINDOW.blit(t, (10, 10 + 20 * i))
+        i += 1
 
     # update the display
     pygame.display.update()
 
 
 def main():
-    # create an instance for a smiley dude and add it to instances
-    some_car = Entity.create_car(SPR_CAR_EAST, WIDTH/2, HEIGHT/2, 0.1, 0.05)
-
-    # create anutha car
+    # create some random car
     another_car = Entity.create_car(SPR_CAR_NORTHEAST, 200, 200, 1.0, 0.2)
 
     # create a pygame clock (used to limit the game to run at a certain fps)
@@ -65,24 +65,24 @@ def main():
 
         # turn the car with the arrow keys
         if keys_pressed[pygame.K_LEFT]:
-            some_car.turn(5)
+            test_car.turn(5)
         if keys_pressed[pygame.K_RIGHT]:
-            some_car.turn(-5)
+            test_car.turn(-5)
 
         # accelerate the car with spacebar
         if keys_pressed[pygame.K_SPACE]:
-            some_car.spd += some_car.acceleration
+            test_car.spd += test_car.acceleration
 
         # hit the brakes with shift (using negative acceleration to brake for now,
         # but at some point there will be a property of cars that determines how
         # good they are at braking)
         if keys_pressed[pygame.K_LSHIFT]:
-            some_car.spd -= 3 * some_car.acceleration
+            test_car.spd -= 3 * test_car.acceleration
 
         # move da car
         # (move() should really be called for every Entity on every game step,
         # but for now we just have the 1 car so this works)
-        some_car.move()
+        test_car.move()
 
         # resolve collision of all circles
         Entity.resolve_circles_collision()
@@ -90,7 +90,7 @@ def main():
         # draw the contents of the window
         # (passing in the reference to some_car because we want to display some
         # of its info onto the screen)
-        draw_everything(Entity.entities, some_car)
+        draw_everything(Entity.entities)
 
     # at this point the while loop condition was broken, so the game ends.
 
