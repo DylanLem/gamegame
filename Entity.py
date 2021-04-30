@@ -1,5 +1,4 @@
 import main
-import pygame
 import numpy
 import math
 
@@ -13,9 +12,6 @@ entities = [
            # more lists to come, but so far we just have circles
 ]
 
-
-# *** ENTITY FUNCTIONS ***
-# (class definitions are after these)
 
 # this functions tracks down and resolves collisions between all circles currently
 # in the game.
@@ -72,42 +68,67 @@ def create_car(sprite, x, y, accl):
     return car
 
 
-# *** ABSTRACT OBJECTS LIKE SHAPES N WHATNOT ***
-
-class Circle:
-    def __init__(self, sprite, x, y, r):
-        # the sprite of this circle
+class Entity:
+    def __init__(self, sprite, x, y):
+        # the sprite of this entity
         self.sprite = sprite
-        # the x and y positions of the center of this circle
+        # the x and y positions of this entity
         self.x = x
         self.y = y
-        # radius of this circle
-        self.radius = r
-        # speed that this circle is travelling
+        # speed that this entity is travelling
         self.spd = 0.0
-        # direction in degrees that this circle is travelling (0 = east)
+        # direction in degrees that this entity is travelling (0 = east)
         self.dir = 0.0
-        # the horizontal and vertical speeds of this circle
+        # the horizontal and vertical components of this entity's velocity
         self.hspd = 0.0
         self.vspd = 0.0
+
+    # calculate the signed horizontal and vertical speeds of the entity
+    # from its current speed and direction
+    def calculate_vel_components(self):
+        self.hspd = self.spd * math.cos(self.dir * (math.pi / 180))
+        self.vspd = self.spd * -math.sin(self.dir * (math.pi / 180))
+
+    # move the entity's position by its hspd and vspd
+    def move(self):
+        # first gotta calculate hspd and vspd
+        self.calculate_vel_components()
+        # then move the entity
+        self.x += self.hspd
+        self.y += self.vspd
+
+
+class Circle(Entity):
+    def __init__(self, sprite, x, y, r):
+        super().__init__(sprite, x, y)
+        # radius of this circle
+        self.radius = r
         # the velocity vector of this circle
         self.velocity = numpy.array([self.hspd, self.vspd])
         # the position of this circle
         self.pos = numpy.array([self.x, self.y])
 
-    # move the circle by its hspd and vspd
-    def move(self):
-        self.x += self.velocity[0]
-        self.y += self.velocity[1]
 
-
-# *** ACTUAL OBJECTS LIKE CARS AND STUFF ***
-
+# a Car has a circle hitbox so it inherits from the Circle class
 class Car(Circle):
     def __init__(self, sprite, x, y, accl):
+        # call the superclass initializer
         super().__init__(sprite, x, y, sprite.get_height()/2)
+        # how quickly this car will accelerate
         self.acceleration = accl
+        # the orientation of this car
         self.orientation = 0.0
+        # the friction experienced by this car
+        self.friction = 0.0
+
+    def move(self):
+        # reduce the cars speed by its friction
+        if self.spd - self.friction >= 0:
+            self.spd -= self.friction
+        else:
+            self.spd = 0
+        # call move() from the superclass
+        super().move()
 
     def accelerate(self, direction):
         self.velocity += numpy.array([self.acceleration * math.cos(direction) / main.FPS,
@@ -121,8 +142,10 @@ class Car(Circle):
         self.dir += direction
         # wrap dir back to 0 if greater than 360, or back to 360 if less than 0.
         self.dir = self.dir % 360
+        # update the car's sprite
         self.update_sprite_angle()
 
+    # update the sprite of this car to match the direction it is currently facing
     def update_sprite_angle(self):
         if self.dir > 337.5 or self.dir <= 22.5:
             self.sprite = main.SPR_CAR_EAST

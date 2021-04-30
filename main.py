@@ -85,7 +85,8 @@ def draw_everything(instances, somecar):
 
 def main():
     # create an instance for a smiley dude and add it to instances
-    some_car = Entity.create_car(SPR_CAR_EAST, WIDTH / 2, HEIGHT / 2, 3.0)
+    some_car = Entity.create_car(SPR_CAR_EAST, WIDTH / 2, HEIGHT / 2, 0.1)
+    some_car.friction = 0.05
 
     # create anutha car
     another_car = Entity.create_car(SPR_CAR_NORTHEAST, 200, 200, 1.0)
@@ -114,14 +115,27 @@ def main():
             some_car.turn(-3)
 
         if keys_pressed[pygame.K_SPACE]:
-            some_car.accelerate(some_car.dir)
+            some_car.spd += some_car.acceleration
+
+        if keys_pressed[pygame.K_d]:
+            some_car.dir = 0
+            some_car.update_sprite_angle()
+        if keys_pressed[pygame.K_w]:
+            some_car.dir = 90
+            some_car.update_sprite_angle()
+        if keys_pressed[pygame.K_a]:
+            some_car.dir = 180
+            some_car.update_sprite_angle()
+        if keys_pressed[pygame.K_s]:
+            some_car.dir = 270
+            some_car.update_sprite_angle()
 
         # get the position of the mouse
         mouse_position = pygame.mouse.get_pos()
 
         # move da car
         # (move() should really be called for every Circle on every game step,
-        # but for now we just have the 1 car)
+        # but for now we just have the 1 car so this works)
         some_car.move()
 
         # keep da other car at 200,200
