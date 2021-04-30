@@ -1,4 +1,4 @@
-import main
+from Constants import *
 import numpy
 import math
 
@@ -59,13 +59,20 @@ def get_circles():
 
 
 # create a car object
-def create_car(sprite, x, y, accl):
+def create_car(sprite, x, y, accl, fric):
     # create the car
-    car = Car(sprite, x, y, accl)
+    car = Car(sprite, x, y, accl, fric)
     # add the car to its appropriate list
     get_circles().append(car)
     # return the car
     return car
+
+
+# remove a car from the game
+def delete_car(car):
+    # remove car from its entity list
+    get_circles().remove(car)
+    del car
 
 
 class Entity:
@@ -75,9 +82,8 @@ class Entity:
         # the x and y positions of this entity
         self.x = x
         self.y = y
-        # speed that this entity is travelling
+        # speed and direction (in degrees) that this entity is travelling (0=east)
         self.spd = 0.0
-        # direction in degrees that this entity is travelling (0 = east)
         self.dir = 0.0
         # the horizontal and vertical components of this entity's velocity
         self.hspd = 0.0
@@ -86,6 +92,10 @@ class Entity:
     # calculate the signed horizontal and vertical speeds of the entity
     # from its current speed and direction
     def calculate_vel_components(self):
+        # do some trig to find the x and y components from the entity's speed and
+        # direction (direction is converted to radians here)
+        # vspd has its sign flipped because pygame counts y up as objects move down
+        # the screen, whereas the cartesian plane counts y up as objects move up.
         self.hspd = self.spd * math.cos(self.dir * (math.pi / 180))
         self.vspd = self.spd * -math.sin(self.dir * (math.pi / 180))
 
@@ -100,6 +110,7 @@ class Entity:
 
 class Circle(Entity):
     def __init__(self, sprite, x, y, r):
+        # call the superclass initializer
         super().__init__(sprite, x, y)
         # radius of this circle
         self.radius = r
@@ -109,20 +120,32 @@ class Circle(Entity):
         self.pos = numpy.array([self.x, self.y])
 
 
-# a Car has a circle hitbox so it inherits from the Circle class
+#                      ______
+#       vroom        /       \
+#           _______/          \_____
+#          |                        \
+#         |     __           __     |
+#          ----/  \---------/  \----
+#              \__/         \__/
+#
+# Cars have a circle hitbox so it inherits from the Circle class
 class Car(Circle):
-    def __init__(self, sprite, x, y, accl):
+    def __init__(self, sprite, x, y, accl, fric):
         # call the superclass initializer
+        # (the "radius" of a car is set to its sprite's height divided by 2 here.
+        # this is like how big the hitbox of the car is)
         super().__init__(sprite, x, y, sprite.get_height()/2)
         # how quickly this car will accelerate
         self.acceleration = accl
         # the orientation of this car
         self.orientation = 0.0
         # the friction experienced by this car
-        self.friction = 0.0
+        self.friction = fric
+        # the maximum speed that this car can travel
+        self.max_speed = 5.0
 
     def move(self):
-        # reduce the cars speed by its friction
+        # first, reduce the cars speed by its friction
         if self.spd - self.friction >= 0:
             self.spd -= self.friction
         else:
@@ -131,15 +154,18 @@ class Car(Circle):
         super().move()
 
     def accelerate(self, direction):
-        self.velocity += numpy.array([self.acceleration * math.cos(direction) / main.FPS,
-                                      self.acceleration * -math.sin(direction) / main.FPS])
+        self.velocity += numpy.array([self.acceleration * math.cos(direction) / FPS,
+                                      self.acceleration * -math.sin(direction) / FPS])
         self.orientation = ((direction - math.pi / 2) / (2 * math.pi)) * 360
 
     # turn the car left or right (counter-clockwise or clockwise)
     #   direction - the direction in degrees to turn the car (negative values turn right)
     def turn(self, direction):
-        # add the given direction to the car's direction
-        self.dir += direction
+        # add the given direction to the car's direction.
+        # the amount added is proportional to the car's speed to simulate the effects
+        # of a real steering wheel. like, if you steer a car while not moving, you
+        # wont actually turn. but you can turn sharper the faster you're going.
+        self.dir += direction * (self.spd / self.max_speed)
         # wrap dir back to 0 if greater than 360, or back to 360 if less than 0.
         self.dir = self.dir % 360
         # update the car's sprite
@@ -148,18 +174,18 @@ class Car(Circle):
     # update the sprite of this car to match the direction it is currently facing
     def update_sprite_angle(self):
         if self.dir > 337.5 or self.dir <= 22.5:
-            self.sprite = main.SPR_CAR_EAST
+            self.sprite = SPR_CAR_EAST
         elif 22.5 < self.dir <= 67.5:
-            self.sprite = main.SPR_CAR_NORTHEAST
+            self.sprite = SPR_CAR_NORTHEAST
         elif 67.5 < self.dir <= 112.5:
-            self.sprite = main.SPR_CAR_NORTH
+            self.sprite = SPR_CAR_NORTH
         elif 112.5 < self.dir <= 157.5:
-            self.sprite = main.SPR_CAR_NORTHWEST
+            self.sprite = SPR_CAR_NORTHWEST
         elif 157.5 < self.dir <= 202.5:
-            self.sprite = main.SPR_CAR_WEST
+            self.sprite = SPR_CAR_WEST
         elif 202.5 < self.dir <= 247.5:
-            self.sprite = main.SPR_CAR_SOUTHWEST
+            self.sprite = SPR_CAR_SOUTHWEST
         elif 247.5 < self.dir <= 295.5:
-            self.sprite = main.SPR_CAR_SOUTH
+            self.sprite = SPR_CAR_SOUTH
         elif 295.5 < self.dir <= 337.5:
-            self.sprite = main.SPR_CAR_SOUTHEAST
+            self.sprite = SPR_CAR_SOUTHEAST
