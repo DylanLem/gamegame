@@ -37,7 +37,7 @@ SPR_SOME_CAR = pygame.image.load(os.path.join("sprites", "car.png"))
 # stretch out the sprite
 SPR_SOME_CAR = pygame.transform.scale(SPR_SOME_CAR, (32, 64))
 
-#Tile sprites
+# Tile sprites
 ROAD_TILE = pygame.image.load(os.path.join("sprites", "road.png"))
 WALL_TILE = pygame.image.load(os.path.join("sprites", "wall.png"))
 
@@ -46,13 +46,8 @@ TILE_SCALE = (64,64)
 ROAD_TILE = pygame.transform.scale(ROAD_TILE, TILE_SCALE)
 WALL_TILE = pygame.transform.scale(WALL_TILE, TILE_SCALE)
 
-#LEVEL DATA
+# LEVEL DATA
 LEVEL0 = "Levels/level0.txt"
-
-
-
-
-
 
 
 # width and height of the game window

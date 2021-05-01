@@ -7,6 +7,7 @@ import Level
 test_car = Entity.create_car(SPR_CAR_EAST, WIDTH/2, HEIGHT/2, 0.1, 0.05)
 lvl0 = Level.Level(LEVEL0)
 
+
 # draw everything that is to be displayed on the screen
 def draw_everything(instances):
     # draw a white background
@@ -19,10 +20,11 @@ def draw_everything(instances):
                                      obj.y - obj.sprite.get_height() / 2))
 
     # create some info text to display
+    txt_col = WHITE
     text = [
-        FONT_MEDIUM.render("accl: " + str(test_car.acceleration), False, BLACK),
-        FONT_MEDIUM.render("dir: " + str(test_car.dir), False, BLACK),
-        FONT_MEDIUM.render("spd: " + str(test_car.spd), False, BLACK)
+        FONT_MEDIUM.render("accl: " + str(test_car.acceleration), False, txt_col),
+        FONT_MEDIUM.render("dir: " + str(test_car.dir), False, txt_col),
+        FONT_MEDIUM.render("spd: " + str(test_car.spd), False, txt_col)
     ]
 
     # draw all the info
@@ -72,7 +74,7 @@ def main():
         if keys_pressed[pygame.K_RIGHT]:
             test_car.turn(-3)
 
-        # accelerate the car with spacebar
+        # accelerate the car with spacebar (still testing)
         if keys_pressed[pygame.K_SPACE]:
             test_car.spd += test_car.acceleration
 

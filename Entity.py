@@ -4,13 +4,11 @@ import math
 
 # a list of lists of entities currently in the game.
 # set up such that each index of this list is a list of a certain type of entity.
-# for example, entities[0] is the list of all circles currently in the game.
+# for example, entities[0] could be the list of all circles currently in the game.
 # entities[1] could be the list of all rectangles, and so on.
-# there may be a cleaner way to do this but whatevs for now >:}
 entities = [
-    [],     # index 0 is for the list of circles
-    []     # index 1 is for the tiles
-           # more lists to come, but so far we just have circles
+    [],     # index 0 is for the list of tiles
+    [],     # index 1 is for circles
 ]
 
 
@@ -27,34 +25,14 @@ def resolve_circles_collision():
     circles = get_circles()
     # for every circle, i, in circles
     for i in range(len(circles)):
-        c1 = circles[i] # get the i-th circle
+        c1 = circles[i]  # get the i-th circle
         # for every remaining circle, j, starting from i, in circles
         for j in range(i + 1, len(circles)):
-            c2 = circles[j] # get the j-th circle
+            c2 = circles[j]  # get the j-th circle
 
-            # calculate the x and y distances between c1 and c2
-            dx = c2.x - c1.x
-            dy = c2.y - c1.y
-            # and calculate the distance directly between their two centers
-            dist = math.sqrt(pow(dx, 2) + pow(dy, 2))
+            resolve_circle_circle(c1, c2)
 
-            # if the distance is less than the sum of their two radii,
-            # we have a collision
-            if dist < c1.radius + c2.radius:
-                # calculate the angle from the line between c1-c2 to the x-axis
-                theta = math.asin(abs(dy) / dist)
-                # calculate the overlap between c1 and c2
-                overlap = (c1.radius + c2.radius) - dist
-                overlap_x = (overlap / 2) * math.cos(theta)
-                overlap_y = (overlap / 2) * math.sin(theta)
-
-                # move the circles out of each other
-                c1.x += overlap_x * -numpy.sign(dx)
-                c1.y += overlap_y * -numpy.sign(dy)
-                c2.x += overlap_x * numpy.sign(dx)
-                c2.y += overlap_y * numpy.sign(dy)
-
-        # also check screen edge collision for every i
+        # also do a simple check for screen edge collision for every i
         if c1.x < 0:
             c1.x = 0
         if c1.y < 0:
@@ -63,6 +41,68 @@ def resolve_circles_collision():
             c1.x = WIDTH
         if c1.y > HEIGHT:
             c1.y = HEIGHT
+
+
+def resolve_collision():
+    # for every entity group G (tiles, circles, etc.)
+    for entity_group in range(len(entities)):
+        # for every entity i in G
+        for i in range(len(entities[entity_group])):
+            source = entities[entity_group][i]
+            # for every remaining entity j, starting from i, in G
+            for j in range(i+1, len(entities[entity_group])):
+                target = entities[entity_group][j]
+
+                if isinstance(source, Circle) and isinstance(target, Circle):
+                    resolve_circle_circle(source, target)
+
+                if isinstance(source, Circle) and isinstance(target, Tile):
+                    resolve_circle_tile(source, target)
+
+
+# resolve collision between two circles c1 and c2
+def resolve_circle_circle(c1, c2):
+    # calculate the x and y distances between c1 and c2
+    dx = c2.x - c1.x
+    dy = c2.y - c1.y
+    # and calculate the distance directly between their two centers
+    dist = math.sqrt(pow(dx, 2) + pow(dy, 2))
+
+    # if the distance is less than the sum of their two radii,
+    # we have a collision
+    if dist < c1.radius + c2.radius:
+        # calculate the angle from the line between c1-c2 to the x-axis
+        theta = math.asin(abs(dy) / dist)
+        # calculate the overlap between c1 and c2
+        overlap = (c1.radius + c2.radius) - dist
+        overlap_x = (overlap / 2) * math.cos(theta)
+        overlap_y = (overlap / 2) * math.sin(theta)
+
+        # move the circles out of each other
+        c1.x += overlap_x * -numpy.sign(dx)
+        c1.y += overlap_y * -numpy.sign(dy)
+        c2.x += overlap_x * numpy.sign(dx)
+        c2.y += overlap_y * numpy.sign(dy)
+
+
+# resolve collision between a circle c and a tile t
+def resolve_circle_tile(c, t):
+    c_box_sidelength = 2*c.radius
+    c_topleft = (c.x - c.radius, c.y - c.radius)
+    c_topright = (c_topleft[0] + 2*c.radius, c_topleft[1])
+    c_bottomleft = (c_topleft[0], c_topleft[1] + 2*c.radius)
+    c_bottomright = (c_topleft[0] + 2*c.radius, c_topleft[1] + 2*c.radius)
+
+    t_topleft = (t.x, t.y)
+    t_topright = (t_topleft[0] + t.sprite.get_width(), t_topleft[1])
+    t_bottomleft = (t_topleft[0], t_topleft[1] + t.sprite.get_height())
+    t_bottomright = (t_topleft[0] + t.sprite.get_width(),
+                     t_topleft[1] + t.sprite.get_height())
+
+
+# get the list of all tiles
+def get_tiles():
+    return entities[0]
 
 
 # get the list of all the circles in the game
@@ -82,8 +122,9 @@ def create_car(sprite, x, y, accl, fric):
 
 # remove a car from the game
 def delete_car(car):
-    # remove car from its entity list
+    # remove car from the appropriate entity list
     get_circles().remove(car)
+    #  e x t e r m i n a t e  the car
     del car
 
 
@@ -122,7 +163,6 @@ class Entity:
 
 class Circle(Entity):
     def __init__(self, sprite, x, y, r):
-        # call the superclass initializer
         super().__init__(sprite, x, y)
         # radius of this circle
         self.radius = r
@@ -130,15 +170,6 @@ class Circle(Entity):
         self.velocity = numpy.array([self.hspd, self.vspd])
         # the position of this circle
         self.pos = numpy.array([self.x, self.y])
-
-
-
-# These babies will build the race track and any environment sprites
-# Walls will have passable = false
-class Tile(Entity):
-    passable = True
-    def __init__(self,sprite,x,y):
-        super().__init__(sprite,x,y)
 
 
 #                      ______
@@ -152,10 +183,9 @@ class Tile(Entity):
 # Cars have a circle hitbox so it inherits from the Circle class
 class Car(Circle):
     def __init__(self, sprite, x, y, accl, fric):
-        # call the superclass initializer
         # (the "radius" of a car is set to its sprite's height divided by 2 here.
         # this is like how big the hitbox of the car is)
-        super().__init__(sprite, x, y, sprite.get_height()/2)
+        super().__init__(sprite, x, y, sprite.get_height() / 2)
         # how quickly this car will accelerate
         self.acceleration = accl
         # the orientation of this car
@@ -186,7 +216,9 @@ class Car(Circle):
         # the amount added is proportional to the car's speed to simulate the effects
         # of a real steering wheel. like, if you steer a car while not moving, you
         # wont actually turn. but you can turn sharper the faster you're going.
-        self.dir += direction * (self.spd / self.max_speed)
+        # (commented out steering wheel simulation thing for now, need a more
+        # complicated system for a more "in-control" feel)
+        self.dir += direction #* (self.spd / self.max_speed)
         # wrap dir back to 0 if greater than 360, or back to 360 if less than 0.
         self.dir = self.dir % 360
         # update the car's sprite
@@ -210,3 +242,19 @@ class Car(Circle):
             self.sprite = SPR_CAR_SOUTH
         elif 295.5 < self.dir <= 337.5:
             self.sprite = SPR_CAR_SOUTHEAST
+
+
+# These babies will build the race track and any environment sprites
+# Walls will have passable = false
+class Tile(Entity):
+    def __init__(self, sprite, x, y):
+        super().__init__(sprite, x, y)
+        # can this tile be passed through?
+        # (default for any tile is True - subclasses can override this)
+        self.passable = True
+
+
+class Wall(Tile):
+    def __init__(self, sprite, x, y):
+        super().__init__(sprite, x, y)
+        self.passable = False
