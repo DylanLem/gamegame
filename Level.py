@@ -38,8 +38,13 @@ class Level:
 
                 # Builds a tile based on the value
                 if(val == 0):
-                    self.tiles[i].append(Entity.Tile(ROAD_TILE, ((j+1) * TILE_SCALE[0]) - TILE_SCALE[0]/2 , ((i+1) * TILE_SCALE[1]) - TILE_SCALE[1]/2))
+                    t = Entity.Tile(ROAD_TILE, ((j+1) * TILE_SCALE[0]) - TILE_SCALE[0]/2,
+                                    ((i+1) * TILE_SCALE[1]) - TILE_SCALE[1]/2)
+                    self.tiles[i].append(t)
                 elif(val == 1):
-                    self.tiles[i].append(Entity.Tile(WALL_TILE, ((j+1) * TILE_SCALE[0]) - TILE_SCALE[0]/2, ((i+1) * TILE_SCALE[1]) - TILE_SCALE[1]/2))
-                Entity.entities[0].append(self.tiles[i][j])
+                    t = Entity.Tile(WALL_TILE, ((j+1) * TILE_SCALE[0]) - TILE_SCALE[0]/2,
+                                    ((i+1) * TILE_SCALE[1]) - TILE_SCALE[1]/2)
+                    t.passable = False
+                    self.tiles[i].append(t)
+                Entity.get_tiles().append(self.tiles[i][j])
         print(len(self.tiles[4]))

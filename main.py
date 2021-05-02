@@ -5,6 +5,7 @@ import Level
 
 # create an instance for a test car
 test_car = Entity.create_car(SPR_CAR_EAST, WIDTH/2, HEIGHT/2, 0.1, 0.05)
+
 lvl0 = Level.Level(LEVEL0)
 
 
@@ -24,7 +25,8 @@ def draw_everything(instances):
     text = [
         FONT_MEDIUM.render("accl: " + str(test_car.acceleration), False, txt_col),
         FONT_MEDIUM.render("dir: " + str(test_car.dir), False, txt_col),
-        FONT_MEDIUM.render("spd: " + str(test_car.spd), False, txt_col)
+        FONT_MEDIUM.render("spd: " + str(test_car.spd), False, txt_col),
+        FONT_MEDIUM.render("colliding: " + str(test_car.colliding), False, txt_col),
     ]
 
     # draw all the info
@@ -39,7 +41,7 @@ def draw_everything(instances):
 
 def main():
     # create some random car
-    another_car = Entity.create_car(SPR_CAR_NORTHEAST, 200, 200, 1.0, 0.2)
+    another_car = Entity.create_car(SPR_CAR_NORTHEAST, 350, 150, 1.0, 0.2)
 
     # create a pygame clock (used to limit the game to run at a certain fps)
     clock = pygame.time.Clock()
@@ -74,27 +76,29 @@ def main():
         if keys_pressed[pygame.K_RIGHT]:
             test_car.turn(-3)
 
-        # accelerate the car with spacebar (still testing)
-        if keys_pressed[pygame.K_SPACE]:
-            test_car.spd += test_car.acceleration
+        # accelerate the car with up arrow (still just testing - this will be done
+        # inside of a Car function at some point)
+        if keys_pressed[pygame.K_UP]:
+            if test_car.spd <= test_car.max_speed:
+                test_car.spd += test_car.acceleration
+            else:
+                test_car.spd = test_car.max_speed
 
-        # hit the brakes with shift (using negative acceleration to brake for now,
-        # but at some point there will be a property of cars that determines how
-        # good they are at braking)
-        if keys_pressed[pygame.K_LSHIFT]:
+        # hit the brakes with spacebar (using negative acceleration to brake for
+        # now, but at some point there will be a property of cars that determines
+        # how good they are at braking)
+        if keys_pressed[pygame.K_SPACE]:
             test_car.spd -= 3 * test_car.acceleration
 
         # move da car
-        # (move() should really be called for every Entity on every game step,
+        # (move() should really be called for every moving Entity on every game step,
         # but for now we just have the 1 car so this works)
         test_car.move()
 
         # resolve collision of all circles
-        Entity.resolve_circles_collision()
+        Entity.resolve_collision()
 
         # draw the contents of the window
-        # (passing in the reference to some_car because we want to display some
-        # of its info onto the screen)
         draw_everything(Entity.entities)
 
     # at this point the while loop condition was broken, so the game ends.
